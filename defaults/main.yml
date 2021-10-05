@@ -1,0 +1,4 @@
+---
+# defaults file for CytadelHosting.fix-ca-certs
+
+add_ca_certs_from_url: false

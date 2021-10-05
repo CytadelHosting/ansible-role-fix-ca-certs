@@ -1,0 +1,5 @@
+---
+# handlers file for CytadelHosting.fix-ca-certs
+
+- name: Update CA cert index
+  shell: /usr/sbin/update-ca-certificates --fresh

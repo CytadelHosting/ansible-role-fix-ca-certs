@@ -1,0 +1,13 @@
+---
+# vars file for CytadelHosting.fix-ca-certs
+
+expired_CA_certs:
+  - 'DST_Root_CA_X3.crt'      # Let's Encrypt Root CA expired on 09/30/2021
+
+added_CA_certs:
+  - name: 'ISRG_Root_X1.crt'
+    url: 'https://letsencrypt.org/certs/isrgrootx1.pem'
+  - name: 'ISRG_Root_X2.crt'
+    url: 'https://letsencrypt.org/certs/isrg-root-x2.pem'
+  - name: 'Lets_Encrypt_R3.crt'
+    url: 'https://letsencrypt.org/certs/lets-encrypt-r3.pem'

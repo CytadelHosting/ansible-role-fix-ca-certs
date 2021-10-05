@@ -1,0 +1,49 @@
+---
+# tasks file for CytadelHosting.fix-ca-certs fix-Debian
+
+- name: Ensure local certs directory exists
+  file: 
+    state: 'directory'
+    path: '/usr/local/share/ca-certificates'
+    owner: 'root'
+    group: 'staff'
+    mode: '02775'
+  tags:
+    - fix_ca_certs
+
+# regex target is lines not starting with a ! (! invalidates a cert in ca-certificates.conf)
+# and containing de invalidated cert filename, whichever the path
+# an invalidator ! will be added at line beginning
+# we chose not to remove the line, to prevent the invalidated cert to pop again if it is reloaded later on the server
+- name: Remove expired CA certs from ca-certificates config
+  lineinfile:
+    path: /etc/ca-certificates.conf
+    regexp: "^(?!!)(.*/{{ item }})"
+    line: '!\1'
+    backrefs: yes
+  loop: "{{ expired_CA_certs }}"
+  notify: Update CA cert index
+  tags:
+    - fix_ca_certs
+
+- name: Install new CA certs from role files
+  copy:
+    src: "{{ item.name }}"
+    dest: "/usr/local/share/ca-certificates/{{ item.name }}"
+    mode: 0644
+  loop: "{{ added_CA_certs }}"
+  when: not add_ca_certs_from_url
+  notify: Update CA cert index
+  tags:
+    - fix_ca_certs
+
+- name: Download & install new CA certs
+  get_url:
+    url: "{{ item.url }}"
+    dest: "/usr/local/share/ca-certificates/{{ item.name }}"
+    mode: 0644
+  loop: "{{ added_CA_certs }}"
+  when: add_ca_certs_from_url
+  notify: Update CA cert index
+  tags:
+    - fix_ca_certs

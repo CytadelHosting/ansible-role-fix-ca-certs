@@ -1,0 +1,7 @@
+---
+# tasks file for CytadelHosting.fix-ca-certs
+
+- include_tasks: fix-Debian.yml
+  when: ansible_os_family == 'Debian'
+  tags:
+    - fix_ca_certs
